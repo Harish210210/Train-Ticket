@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</head>
+<body>
+    <div class="container pt-5">
+        <h2>Train Ticket Booking</h2>
+        <form>
+            <div class="row">
+                <div class="col-md-4">
+                	<label>From</label>
+                    <select id="from" class="input form-select">
+                      </select>
+                </div>
+                <div class="col-md-4">
+                	<label>To</label>
+                    <select id="to" class="input form-select">
+                      </select>
+                </div>
+                <div class="col-md-4">
+                	<label>Trains</label>
+                    <select id="trains" class="input form-select">
+                      </select>
+                </div>
+            </div>   
+            <br/>
+            <div class="row">
+                <div class="col-md-6">
+                    <input class="input form-control" id="date" type="date" value=> 
+                </div>
+                <div class="col-md-6">
+                    <select id="coach" class="input form-select" aria-label="Default select example">
+                        <option value="Sleeper">Sleeper</option>
+                        <option value="1st AC">1st AC</option>
+                        <option value="2nd AC">2nd AC</option>
+                        <option value="3rd AC">3rd AC</option>
+                      </select>
+                </div>
+            </div>  
+            <br/>
+            <div class="row">
+                <div class="col-md-5"></div>
+                <div class="col-md-2">
+                    <button id="subbtn" class="input bg-primary form-control text-white">Submit</button>    
+                </div>
+                <div class="col-md-5"></div>
+            </div>       
+        </form>
+        <br/>
+        <div class="pdata">
+	        <form>
+	        <div class="row">
+	        	<div class="col-md-1"></div>
+	        	<div class="col-md-10">
+	        		<h2>Passengers List</h2>
+	        		<table id="ptable" class="table table-bordered">
+	            		<tr id="prow">
+	                		<td><input type="text" id="pn1" class="form-control" placeholder="Name" required/></td>
+	                		<td><select id="pg1" class="form-control" placeholder="Gender">
+	                			<option value="male">Male</option>
+	                			<option value="female">Female</option>
+	                		</select></td>
+	                		<td><input type="number" id="pa1" class="form-control" placeholder="Age" required /></td>
+	                		<td><select id="pp1" class="form-control" placeholder="Preferences" >
+	                			<option value="lower">Lower</option>
+	                			<option value="middle">Middle</option>
+	                			<option value="upper">Upper</option>
+	                		</select></td>
+	            		</tr>
+	        		</table>
+	        	</div>
+	        </div>
+	        
+	        <div class="row">
+				<div class="col-md-3"></div>
+				<div id="etsp" class="col-md-1"></div>
+				<div id="addbtn" class="col-md-2">
+                    <button id="add" class="input bg-primary form-control text-white">Add Person</button>     
+				</div>
+				<div id="rembtn" class="col-md-2">
+                    <button id="remove" class="input bg-primary form-control text-white">Remove Person</button>       
+				</div>
+				<div class="col-md-2">
+                    <input type="submit" data-bs-toggle="modal" data-bs-target="#checkout" id="book" value="Book Ticket" class="input bg-primary form-control text-white" />      
+				</div>
+				<div class="col-md-3"></div>
+				<div id="etsp2" class="col-md-1"></div>
+			</div>  
+			</form>
+			<div class="modal fade" id="checkout">
+		  <div class="modal-dialog modal-xl">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <h4 class="modal-title">Checkout Page</h4>
+		        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+		      </div>
+		      <div class="modal-body">
+		        <div class="container ps-5 pe-5">
+		        	<h3>Train Details</h3>
+		        	<table id="traindetails">
+		        		
+		        	</table>
+		        	<br/>
+		        	<h3>Passengers Details</h3>
+		        	<table class="table table-striped" id="passengers">
+		        		<tr>
+		        			<th>Name</th>
+		        			<th>Age</th>
+		        			<th>Gender</th>
+		        			<th>Preference</th>
+		        			<th>Price</th>
+		        		</tr>
+		        	</table>
+		        	<div id="total">
+							        	
+		        	</div>
+		        	<center><h1>Tickets Booked Successfully</h1></center>
+		        </div>
+		      </div>		
+		    </div>
+		  </div>
+		</div>
+		</div>
+    </div>
+    <script>
+    	$(".pdata").css('display', 'none');
+    	$("#rembtn").css('display', 'none');
+	    var today = new Date().toISOString().split('T')[0];
+	    document.getElementById("date").min = today;
+	    document.getElementById("date").value = today;
+	    var f=0,t=0,pc=1;
+	    $("#subbtn").click(function(e){
+	    	e.preventDefault();
+	    	$(".pdata").css('display', 'block');
+	    })
+	    $("#add").click(function(e){
+	    	e.preventDefault();
+	    	if(pc===1){
+	        	$("#etsp").css('display', 'none');
+	        	$("#etsp2").css('display', 'none');
+	        	$("#rembtn").css('display', 'block');
+	    	}
+	    	var row = '<tr id="prow"><td><input type="text" id="pn1" class="form-control" placeholder="Name" required/></td><td><select id="pg1" class="form-control" placeholder="Gender"><option value="male">Male</option><option value="female">Female</option></select></td><td><input type="number" id="pa1" class="form-control" placeholder="Age" required /></td><td><select id="pp1" class="form-control" placeholder="Preferences" ><option value="lower">Lower</option><option value="middle">Middle</option><option value="upper">Upper</option></select></td></tr>';
+	    	$("#ptable").append(row);
+	    	pc++;
+	    	if(pc===6){
+	        	$("#etsp").css('display', 'block');
+	        	$("#etsp2").css('display', 'block');
+	        	$("#addbtn").css('display', 'none');	    		
+	    	}
+	    })
+	    $("#remove").click(function(e){
+	    	e.preventDefault();
+	    	if(pc===2){
+	        	$("#etsp").css('display', 'block');
+	        	$("#etsp2").css('display', 'block');
+	        	$("#rembtn").css('display', 'none');
+	    	}
+	    	$("#ptable").empty();
+	    	pc--;
+	    	for(let i=0;i<pc;i++){
+	    		var row = '<tr id="prow"><td><input type="text" id="pn1" class="form-control" placeholder="Name" required/></td><td><select id="pg1" class="form-control" placeholder="Gender"><option value="male">Male</option><option value="female">Female</option></select></td><td><input type="number" id="pa1" class="form-control" placeholder="Age" required /></td><td><select id="pp1" class="form-control" placeholder="Preferences" ><option value="lower">Lower</option><option value="middle">Middle</option><option value="upper">Upper</option></select></td></tr>';
+		    	$("#ptable").append(row);
+	    	}	    	
+	    	if(pc===5){
+	        	$("#etsp").css('display', 'none');
+	        	$("#etsp2").css('display', 'none');
+	        	$("#addbtn").css('display', 'block');	    		
+	    	}
+	    })
+	    
+	    $("#book").click(function(e){
+	    	e.preventDefault();
+	    	var names = [];
+	    	var gender = [];
+	    	var age = [];
+	    	var preferences = [];
+	    	var len = 0;
+	    	var total = 0;
+	    	var inames = document.querySelectorAll("#pn1");
+	    	var igender = document.querySelectorAll("#pg1");
+	    	var iage = document.querySelectorAll("#pa1");
+	    	var ipref = document.querySelectorAll("#pp1");
+	    	for(let i=0;i<6;i++) {
+	    		if(inames.length>i){
+	    	    	names.push(inames[i].value);
+	    	    	len++;
+	    		}
+	    		else
+	    			names.push("*");
+	    	}
+	    	for(let i=0;i<6;i++) {
+	    		if(igender.length>i)
+	    			gender.push(igender[i].value);
+	    		else
+	    			gender.push("*");
+	    	}
+	    	for(let i=0;i<6;i++) {
+	    		if(iage.length>i)
+	    			age.push(iage[i].value);
+	    		else
+	    			age.push("*");
+	    	}
+	    	for(let i=0;i<6;i++) {
+	    		if(ipref.length>i)
+	    			preferences.push(ipref[i].value);
+	    		else
+	    			preferences.push("*");
+	    	}
+	    	var from = $("#from").val();
+	    	var to = $("#to").val();
+	    	var train = $("#trains").val();
+	    	var date = $("#date").val();
+	    	var coach = $("#coach").val();
+	    	var pnr = Math.floor(100000 + Math.random() * 900000);
+	    	$.ajax({
+	      		url:'SendTicket',
+	      		method:'post',
+	      		data:{
+	      			fr:from,tt:to,tr:train,dt:date,ch:coach,ln:len,pn:pnr,
+	      			name1:names[0],gender1:gender[0],age1:age[0],pref1:preferences[0],
+	      			name2:names[1],gender2:gender[1],age2:age[1],pref2:preferences[1],
+	      			name3:names[2],gender3:gender[2],age3:age[2],pref3:preferences[2],
+	      			name4:names[3],gender4:gender[3],age4:age[3],pref4:preferences[3],
+	      			name5:names[4],gender5:gender[4],age5:age[4],pref5:preferences[4],
+	      			name6:names[5],gender6:gender[5],age6:age[5],pref6:preferences[5]
+	      		},
+	      		success:function(res){
+	      			var rows = "<tr><th>Train PNR</th><td>:"+pnr+"</td></tr>"
+	      						+"<tr><th>Train Name</th><td>:"+train+"</td></tr>"
+	      						+"<tr><th>Travel Date</th><td>:"+date+"</td></tr>"
+	      						+"<tr><th>From Station</th><td>:"+from+"</td></tr>"
+	      						+"<tr><th>To Station</th><td>:"+to+"</td></tr>"
+	      						+"<tr><th>Train Class</th><td>:"+coach+"</td></tr>"
+	      						+"<tr><th>Number of Passengers</th><td>:"+len+"</td></tr>";
+	      			$("#traindetails").append(rows);
+	      			res.map((ele)=>{
+	      				var row = "<tr><td>"+ele.pname+"</td><td>"+ele.page+"</td><td>"
+	      				+ele.pgen+"</td><td>"+ele.ppref+"</td><td>"+ele.pprice+"</td></tr>"
+	      				total += Number(ele.pprice);
+	      				$("#passengers").append(row);
+	      			})
+	      			$("#total").append("<h5>Total Price : "+total+"/-</h5>");
+	      		}
+	      	})
+	    })
+	    
+	    jQuery(document).ready(function($){
+	  	  $("#from").click(function(){
+	  		  if(f==0){
+	  			getFromStations();
+	  			f++;
+	  		  }
+	  	  });
+	  	});
+	    
+	    jQuery(document).ready(function($){
+	    	  $("#to").click(function(){
+	    		  if(t==0){
+	    			getToStations();
+	    			t++;
+	    		  }
+	    	  });
+	    });
+	    
+	    function getFromStations(){
+	    	$.ajax({
+	      		url:'Station',
+	      		method:'post',
+	      		success:function(res){
+		      		let df = document.getElementById("from");
+		     		res.map((ele)=>{
+		      			let ob = document.createElement("option");
+		      			ob.setAttribute("value", ele.sname);
+		      			ob.textContent = ele.sname;
+		      			df.appendChild(ob);
+		      		})  				
+	      		}
+	      	})
+	    }
+	    function getToStations(){
+	    	$.ajax({
+	      		url:'Station',
+	      		method:'post',
+	      		success:function(res){
+		      		let df = document.getElementById("to");
+		     		res.map((ele)=>{
+		      			let ob = document.createElement("option");
+		      			ob.setAttribute("value", ele.sname);
+		      			ob.textContent = ele.sname;
+		      			df.appendChild(ob);
+		      		})  				
+	      		}
+	      	})
+	    }
+	    
+	    $("#to").change(function() {
+	        var tv = $("#to").val();
+	        var fv = $("#from").val();
+	        if(!fv.includes(tv))
+	        	getTrains();
+	        else{
+	  			$("#trains").empty();
+	  			let ob = document.createElement("option");
+	  			ob.textContent = "No Trains Available";
+	  			document.getElementById("trains").appendChild(ob);
+	        }
+	    });
+	    
+	    $("#from").change(function() {
+	        var tv = $("#to").val();
+	        var fv = $("#from").val();
+	        if(tv != null){
+	        	if(!fv.includes(tv))
+	            	getTrains();
+	            else{
+	      			$("#trains").empty();
+	      			let ob = document.createElement("option");
+	      			ob.textContent = "No Trains Available";
+	      			document.getElementById("trains").appendChild(ob);
+	            }
+	        }
+	    });
+	    
+	    function getTrains(){
+	    	$.ajax({
+	      		url:'Trains',
+	      		method:'post',
+	      		data:{
+	      			from:$("#from").val(),
+	      			to:$("#to").val()
+	      		},
+	      		success:function(res){
+	      			$("#trains").empty();
+	      			let df = document.getElementById("trains");
+	      			if(res.length===0){
+	      				let ob = document.createElement("option");
+	          			ob.textContent = "No Trains Available";
+	          			df.appendChild(ob);
+	      			}
+	      			else{
+			     		res.map((ele)=>{
+			      			let ob = document.createElement("option");
+			      			ob.setAttribute("value", ele.tname);
+			      			ob.textContent = ele.tname;
+			      			df.appendChild(ob);
+			      		})
+		      		}
+	      		}
+	      	})
+	    }
+    </script>
+</body>
+</html>
